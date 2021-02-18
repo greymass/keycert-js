@@ -30,7 +30,9 @@ generate({
 decrypt(
     'anchorcert:KgKgBT5ajPc6VroP2hHk2S4COKSiqnT8z0bVqRB0aEAAAAAAXHMoXQAAAACAqyanACTh3X6hzLZx-dGsO0swCpi2WDg_Xd8mSK-C2kY_gygHpHe8jNk',
     ['number', 'arrow', 'twenty', 'permit', 'much', 'caution']
-).then((privateKey) => {
+).then(({chainId, account, privateKey}) => {
+    console.log(String(chainId)) // 2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840
+    console.log(JSON.stringify(account)) // {"actor": "foobar", "permission": "owner"}
     console.log(privateKey.toWif()) // 5KYnSy2U9y8Ua1AbWYDQxuEa6Smc9WPtBNsQ6TZRPsZBqFB3AqS
 })
 ```

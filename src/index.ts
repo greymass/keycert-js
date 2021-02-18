@@ -10,7 +10,9 @@ export async function decrypt(
     encryptionWords: string[],
     progress?: ProgressCallback
 ) {
-    return KeyCertificate.from(cert).decrypt(encryptionWords, progress)
+    const c = KeyCertificate.from(cert)
+    const privateKey = await c.decrypt(encryptionWords, progress)
+    return {privateKey, account: c.account, chainId: c.chainId}
 }
 
 export * from './key-certificate'
