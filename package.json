@@ -1,7 +1,7 @@
 {
     "name": "@greymass/keycert",
     "description": "Anchor key certificate encoding and decoding library",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "homepage": "https://github.com/greymass/keycert",
     "license": "BSD-3-Clause",
     "main": "lib/keycert.js",
