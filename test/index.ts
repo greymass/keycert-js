@@ -1,7 +1,7 @@
 import {strict as assert} from 'assert'
 import 'mocha'
 
-import {KeyCertificate} from '../src/key-certificate'
+import {KeyCertificate, wordlist} from '../src'
 
 suite('KeyCertificate', function () {
     this.timeout(60 * 1000)
@@ -160,6 +160,7 @@ suite('misc', function () {
                 words.filter((v, i, a) => a.indexOf(v) === i),
                 words
             )
+            assert(words.every((word) => wordlist.includes(word)))
         }
     })
 })

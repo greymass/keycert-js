@@ -16,3 +16,4 @@ export async function decrypt(
 }
 
 export * from './key-certificate'
+export {wordlist} from './mnemonic'
