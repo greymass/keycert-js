@@ -148,6 +148,32 @@ suite('KeyCertificate', function () {
         )
         assert.deepEqual(encryptionWords, ['pepper', 'craft', 'chat', 'march', 'slim', 'exchange'])
     })
+
+    test('generate deterministic', async function () {
+        this.slow(5 * 1000)
+        const {cert, encryptionWords} = await KeyCertificate.generate({
+            chainId: '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840',
+            account: {actor: 'dingdong.gm', permission: 'owner'},
+            privateKey: 'PVT_K1_zVFeDTSxD6KDCjQomkzZMdB5AiaR3EnCZLrxmsx5tDzH937km',
+            deterministicWords: true,
+            securityLevel: {N: 65536, r: 16, p: 1},
+        })
+        assert.equal(
+            String(cert),
+            'anchorcert:KgKgBT5ajPc6VroP2hHk2S4COKSiqnT8z0bVqRB0aEAAJANs0sSmSwAAAACAqyanAER8IsLgtAmdDKdxDP7FhXujQqhijM-mEK55eGd4qTc5dbi3Bak'
+        )
+        assert.deepEqual(encryptionWords, ['match', 'effort', 'boost', 'spirit', 'record', 'buzz'])
+        await assert.rejects(async () => {
+            await KeyCertificate.generate({
+                chainId: '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840',
+                account: {actor: 'dingdong.gm', permission: 'owner'},
+                privateKey: 'PVT_K1_zVFeDTSxD6KDCjQomkzZMdB5AiaR3EnCZLrxmsx5tDzH937km',
+                encryptionWords: ['pepper', 'craft', 'chat', 'march', 'slim', 'exchange'],
+                deterministicWords: true,
+                securityLevel: {N: 65536, r: 16, p: 1},
+            })
+        }, /Cannot use deterministicWords and encryptionWords together/)
+    })
 })
 
 suite('misc', function () {

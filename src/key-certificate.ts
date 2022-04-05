@@ -6,9 +6,11 @@ import {
 } from 'eosio-key-encryption'
 import {Base64u, ChainId, ChainIdType} from 'eosio-signing-request'
 import {
+    Checksum256,
     isInstanceOf,
     PermissionLevel,
     PermissionLevelType,
+    PrivateKey,
     PrivateKeyType,
     Serializer,
     Struct,
@@ -16,6 +18,7 @@ import {
 } from '@greymass/eosio'
 
 import mnemonic, {wordlist} from './mnemonic'
+import PRNG from './prng'
 
 export interface GenerationArguments {
     /** Chain id where account exists. */
@@ -28,6 +31,8 @@ export interface GenerationArguments {
     securityLevel?: SecurityLevelType
     /** Pre-determined encryption keywords, if omitted they will be randomly generated. */
     encryptionWords?: string[]
+    /** Whether to derive the encryption words from the private key, incompatible with the encryptionWords option. */
+    deterministicWords?: boolean
 }
 
 export interface GenerationResult {
@@ -86,10 +91,13 @@ export class KeyCertificate extends Struct {
     }
 
     /** Draw 6 encryption words from the wordlist. */
-    static randomEncryptionWords() {
+    static randomEncryptionWords(rng?: () => number) {
         const rv: string[] = []
+        if (!rng) {
+            rng = () => UInt32.random().toNumber()
+        }
         while (rv.length < 6) {
-            const word = wordlist[UInt32.random().value % 2048]
+            const word = wordlist[rng() % 2048]
             if (rv.includes(word)) {
                 continue
             }
@@ -98,12 +106,26 @@ export class KeyCertificate extends Struct {
         return rv
     }
 
+    /** Get 6 encryption words for a given private key. */
+    static deterministicEncryptionWords(key: PrivateKeyType) {
+        const seed = new Uint32Array(Checksum256.hash(PrivateKey.from(key).data).array.buffer).slice(0, 4)
+        return this.randomEncryptionWords(PRNG(seed))
+    }
+
     /** Generate a new key certificate. */
     static async generate(
         args: GenerationArguments,
         progress?: ProgressCallback
     ): Promise<GenerationResult> {
-        const encryptionWords = args.encryptionWords || this.randomEncryptionWords()
+        let encryptionWords: string[]
+        if (args.deterministicWords) {
+            if (args.encryptionWords) {
+                throw new Error('Cannot use deterministicWords and encryptionWords together')
+            }
+            encryptionWords = this.deterministicEncryptionWords(args.privateKey)
+        } else {
+            encryptionWords = args.encryptionWords || this.randomEncryptionWords()
+        }
         if (encryptionWords.length !== 6) {
             throw new Error(`Expected 6 encryption words, got ${encryptionWords.length || 0}`)
         }
