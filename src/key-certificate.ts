@@ -108,7 +108,9 @@ export class KeyCertificate extends Struct {
 
     /** Get 6 encryption words for a given private key. */
     static deterministicEncryptionWords(key: PrivateKeyType) {
-        const seed = new Uint32Array(Checksum256.hash(PrivateKey.from(key).data).array.buffer).slice(0, 4)
+        const seed = new Uint32Array(
+            Checksum256.hash(PrivateKey.from(key).data).array.buffer
+        ).slice(0, 4)
         return this.randomEncryptionWords(PRNG(seed))
     }
 
