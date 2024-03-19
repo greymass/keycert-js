@@ -1,6 +1,10 @@
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
 import typescript from '@rollup/plugin-typescript'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json';
+import { terser } from 'rollup-plugin-terser';
 
 import pkg from './package.json'
 
@@ -41,6 +45,26 @@ export default [
         },
         plugins: [typescript({target: 'es2020'})],
         external,
+        onwarn,
+    },
+    {
+        input: 'src/index.ts',
+        output: {
+            banner,
+            name: 'KeycertJs',
+            file: pkg.iife,
+            format: 'iife',
+            globals: {},
+            sourcemap: true,
+        },
+        plugins: [
+            json(),
+            typescript({ tsconfig: './tsconfig.json' }),
+            resolve(), 
+            commonjs(),
+            terser(),
+        ],
+        external: [], // All dependencies are bundled
         onwarn,
     },
     {
