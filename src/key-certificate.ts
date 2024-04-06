@@ -3,8 +3,8 @@ import {
     EncryptedPrivateKeyType,
     ProgressCallback,
     SecurityLevelType,
-} from 'eosio-key-encryption'
-import {Base64u, ChainId, ChainIdType} from 'eosio-signing-request'
+} from '@greymass/antelope-key-encryption'
+import {Base64u, ChainId, ChainIdType} from '@wharfkit/signing-request'
 import {
     Checksum256,
     isInstanceOf,
@@ -15,7 +15,7 @@ import {
     Serializer,
     Struct,
     UInt32,
-} from '@greymass/eosio'
+} from '@wharfkit/antelope'
 
 import mnemonic, {wordlist} from './mnemonic'
 import PRNG from './prng'
