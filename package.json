@@ -20,10 +20,10 @@
         "prepare": "make"
     },
     "dependencies": {
+        "@greymass/antelope-key-encryption": "^1.3.0",
         "@greymass/base2048": "^1.0.0",
-        "@greymass/eosio": "^0.6.0",
-        "eosio-key-encryption": "^1.2.0",
-        "eosio-signing-request": "^2.5.0",
+        "@wharfkit/antelope": "^1.0.7",
+        "@wharfkit/signing-request": "^3.2.0",
         "tslib": "^2.1.0"
     },
     "devDependencies": {
